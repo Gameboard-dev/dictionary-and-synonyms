@@ -1,0 +1,10 @@
+{
+  "id": "dictionary-and-synonyms",
+  "name": "Dictionary and Synonyms",
+  "version": "0.1.0",
+  "minAppVersion": "1.5.0",
+  "description": "Select a word for its synonyms, in a dropdown that replaces it with the one you click; select it with Ctrl for its definitions. From Datamuse, Wiktionary and Wikipedia, each word looked up once and kept as a note; whole dictionaries can be downloaded for use offline.",
+  "author": "Gameboard-dev",
+  "isDesktopOnly": false,
+  "authorUrl": "https://github.com/Gameboard-dev"
+}

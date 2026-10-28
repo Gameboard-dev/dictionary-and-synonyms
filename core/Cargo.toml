@@ -1,0 +1,21 @@
+[package]
+name = "dictionary-and-synonyms-core"
+version = "0.1.0"
+edition = "2021"
+description = "Dictionary and Synonyms, an Obsidian plugin in Rust: synonyms on select, definitions on Ctrl+select, whole dictionaries for use offline"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+obsidian-kit = { path = "../../shared" }
+wasm-bindgen = "=0.2.129"
+js-sys = "0.3"
+serde-wasm-bindgen = "0.6"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# Retrying an interrupted download with exponential backoff (https://docs.rs/backon); the waits are JavaScript timers.
+backon = { version = "1.6", default-features = false }
+# Open English WordNet's XML (https://docs.rs/quick-xml).
+quick-xml = "0.42"
