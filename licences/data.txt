@@ -1,0 +1,67 @@
+PART 3. SOURCES OF THE WORDS
+
+The plugin ships no dictionary, thesaurus or encyclopedia data. It reads the sources below over the network when you
+select a word, or downloads a whole dictionary when you press Download in its settings, and keeps what it finds on
+your own computer: in a note in your vault, whose `sources` property names each source and its licence, and, for a
+downloaded dictionary, in your computer's cache folder. These are the sources, their licences and the attribution they
+ask for. Text you keep from them stays under their licences, whatever you do with it later.
+
+================================================================================
+Wiktionary (English Wiktionary, https://en.wiktionary.org/), definitions and synonyms
+--------------------------------------------------------------------------------
+Read page by page through the MediaWiki Action API (https://en.wiktionary.org/w/api.php).
+Licence: Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0,
+https://creativecommons.org/licenses/by-sa/4.0/); much of the text is also available under the GNU Free Documentation
+License (https://www.gnu.org/licenses/fdl-1.3.html). Terms: https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use.
+Attribution: each note links the Wiktionary page its definitions came from, whose history lists the authors.
+Requests identify the plugin with a User-Agent, as Wikimedia's User-Agent policy asks
+(https://foundation.wikimedia.org/wiki/Policy:Wikimedia_Foundation_User-Agent_Policy).
+
+================================================================================
+Wikipedia (https://www.wikipedia.org/), the opening sentences of an article for a term no dictionary has
+--------------------------------------------------------------------------------
+Read through the MediaWiki Action API with the TextExtracts extension (https://<language>.wikipedia.org/w/api.php).
+Licence: CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/), and the GNU Free Documentation License where
+the article offers it. Attribution: each note keeps the article's title and URL (`summary-title`, `summary-url`).
+
+================================================================================
+Datamuse API (https://www.datamuse.com/api/), synonyms, and short definitions when Wikimedia cannot answer
+--------------------------------------------------------------------------------
+A free web service. Its page asks that an application acknowledge the Datamuse API in its documentation: this file and
+the plugin's README do. Its synonyms draw on WordNet 3.0 and its definitions on WordNet and Wiktionary (the Datamuse
+page). Princeton WordNet 3.0's licence (https://wordnet.princeton.edu/license-and-commercial-use):
+
+  WordNet Release 3.0 This software and database is being provided to you, the LICENSEE, by Princeton University
+  under the following license. By obtaining, using and/or copying this software and database, you agree that you
+  have read, understood, and will comply with these terms and conditions.: Permission to use, copy, modify and
+  distribute this software and database and its documentation for any purpose and without fee or royalty is hereby
+  granted, provided that you agree to comply with the following copyright notice and statements, including the
+  disclaimer, and that the same appear on ALL copies of the software, database and documentation, including
+  modifications that you make for internal use or for distribution. WordNet 3.0 Copyright 2006 by Princeton
+  University. All rights reserved. THIS SOFTWARE AND DATABASE IS PROVIDED "AS IS" AND PRINCETON UNIVERSITY MAKES NO
+  REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED. BY WAY OF EXAMPLE, BUT NOT LIMITATION, PRINCETON UNIVERSITY MAKES
+  NO REPRESENTATIONS OR WARRANTIES OF MERCHANT- ABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF THE
+  LICENSED SOFTWARE, DATABASE OR DOCUMENTATION WILL NOT INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS OR
+  OTHER RIGHTS. The name of Princeton University or Princeton may not be used in advertising or publicity pertaining
+  to distribution of the software and/or database. Title to copyright in this software, database and any associated
+  documentation shall at all times remain with Princeton University and LICENSEE agrees to preserve same.
+
+================================================================================
+Open English WordNet 2025 (https://en-word.net/), a whole dictionary, downloaded only when you press Download
+--------------------------------------------------------------------------------
+The file english-wordnet-2025.xml.gz from https://en-word.net/downloads. Its page: "Open English Wordnet is derived
+from Princeton WordNet by the Open English Wordnet Community" and is "released under the Creative Commons Attribution
+(CC-BY) 4.0 License" (https://creativecommons.org/licenses/by/4.0/). Contributors:
+https://github.com/globalwordnet/english-wordnet. Princeton WordNet 3.0's licence is quoted above.
+Attribution: each note made from it links the word's page on en-word.net and names the licence.
+
+================================================================================
+Wiktextract's extract of Wiktionary, by kaikki.org (https://kaikki.org/dictionary/rawdata.html), downloaded only when you
+press Download
+--------------------------------------------------------------------------------
+The file raw-wiktextract-data.jsonl.gz: every entry of English Wiktionary, extracted by Wiktextract
+(https://github.com/tatuylonen/wiktextract); the plugin keeps the selected language's entries. The text is Wiktionary's,
+under CC BY-SA 4.0 and the GNU Free Documentation License as above. kaikki.org asks academic users to cite
+Tatu Ylonen, "Wiktextract: Wiktionary as Machine-Readable Structured Data", Proceedings of the 13th Conference on
+Language Resources and Evaluation (LREC 2022), pp. 1317-1325, and appreciates a link to https://kaikki.org/.
+Attribution: each note made from it links the word's Wiktionary page.

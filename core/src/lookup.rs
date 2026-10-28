@@ -204,8 +204,16 @@ pub async fn rewrite_old_notes() {
     }
 }
 
+/// The word's note in the folder (a setting), cleaned by Obsidian's `normalizePath` as its guidelines ask for paths a
+/// user types (<https://docs.obsidian.md/Reference/TypeScript+API/normalizePath>).
 fn note_path(folder: &str, lang: &str, word: &str) -> String {
-    format!("{}/{}/{}.md", folder.trim_end_matches('/'), dict::language(lang).section, dict::file_name(word))
+    let path = format!("{}/{}/{}.md", folder.trim().trim_end_matches('/'), dict::language(lang).section, dict::file_name(word));
+    with(|a| get(&a.obs, "normalizePath")).filter(JsValue::is_function).map_or(path.clone(), |n| str(&js::apply(&n, &JsValue::NULL, &[path.into()])))
+}
+
+/// The vault's file or folder at `path` (`Vault.getAbstractFileByPath`), if there is one.
+fn in_vault(vault: &JsValue, path: &str) -> Option<JsValue> {
+    Some(call!(vault, getAbstractFileByPath, path)).filter(JsValue::is_object)
 }
 
 fn cache_key(lang: &str, w: &str) -> String {
@@ -217,10 +225,13 @@ async fn load(w: &str, lang: &str) -> Entry {
     if let Some(e) = state(|s| s.cache.get(&cache_key(lang, w)).cloned()) {
         return e;
     }
-    let Some((adapter, folder)) = with(|a| (a.adapter.clone(), a.settings.dict_folder.clone())) else { return Entry::default() };
-    if let Ok(md) = js::wait(call!(adapter, read, note_path(&folder, lang, &key(w)))).await {
-        if let Some(e) = dict::from_note(&str(&md)) {
-            return e;
+    let Some((vault, folder)) = with(|a| (a.vault.clone(), a.settings.dict_folder.clone())) else { return Entry::default() };
+    // through the Vault API (its cache), as Obsidian's guidelines prefer to the adapter
+    if let Some(file) = in_vault(&vault, &note_path(&folder, lang, &key(w))) {
+        if let Ok(md) = js::wait(call!(vault, cachedRead, file)).await {
+            if let Some(e) = dict::from_note(&str(&md)) {
+                return e;
+            }
         }
     }
     Entry { word: key(w), lang: dict::language(lang).section.into(), ..Default::default() }
@@ -230,22 +241,27 @@ async fn load(w: &str, lang: &str) -> Entry {
 async fn store(lang: &str, e: &Entry) {
     state(|s| s.cache.insert(cache_key(lang, &e.word), e.clone()));
     let has = !e.senses.is_empty() || e.summary.is_some() || e.thesaurus.as_ref().is_some_and(|t| !t.is_empty());
-    let Some((vault, adapter, folder)) = with(|a| (a.vault.clone(), a.adapter.clone(), a.settings.dict_folder.clone())) else { return };
+    let Some((vault, folder)) = with(|a| (a.vault.clone(), a.settings.dict_folder.clone())) else { return };
     if !has {
         return;
     }
     let path = note_path(&folder, lang, &e.word);
-    let dir = path.rsplit_once('/').map_or(String::new(), |(d, _)| d.to_string());
-    if !js::wait(call!(adapter, exists, dir.clone())).await.is_ok_and(|v| v.is_truthy()) {
-        _ = js::wait(call!(adapter, mkdir, dir)).await;
-    }
     let date: String = str(&call!(new(&get(&js::global(), "Date"), &[]), toISOString)).chars().take(10).collect(); // YYYY-MM-DD
     let md = dict::note(e, &date);
-    if js::wait(call!(adapter, exists, path.clone())).await.is_ok_and(|v| v.is_truthy()) {
-        _ = js::wait(call!(adapter, write, path, md)).await; // the same word looked up again for more: both kept
-    } else {
-        _ = js::wait(call!(vault, create, path, md)).await;
+    // the Vault API, as Obsidian's guidelines prefer: `process` for a note that exists (the same word looked up again
+    // for more: both kept), else `create`, after `createFolder` for each missing folder on the way
+    if let Some(file) = in_vault(&vault, &path) {
+        _ = js::wait(call!(vault, process, file, f1(move |_| md.clone().into()))).await;
+        return;
     }
+    let mut dir = String::new();
+    for part in path.split('/').collect::<Vec<_>>().split_last().map_or(&[][..], |(_, d)| d) {
+        dir = if dir.is_empty() { part.to_string() } else { format!("{dir}/{part}") };
+        if in_vault(&vault, &dir).is_none() {
+            _ = js::wait(call!(vault, createFolder, dir.clone())).await;
+        }
+    }
+    _ = js::wait(call!(vault, create, path, md)).await;
 }
 
 /// A word's synonyms, best first, with their parts of speech: Datamuse's, or Wiktionary's for a language Datamuse does

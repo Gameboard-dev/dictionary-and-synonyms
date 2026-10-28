@@ -514,11 +514,12 @@ async fn refresh(row: &Row) {
     let wordnet = row.source == Source::WordNet;
     let show = |text: String, bar: Option<f64>, buttons: &[&str]| {
         set(&row.text, "textContent", text);
-        set(&get(&row.bar, "style"), "display", if bar.is_some() { "block" } else { "none" });
+        // Obsidian's `HTMLElement.toggle(show)` rather than styles set from code (the plugin guidelines)
+        call!(row.bar, toggle, bar.is_some());
         set(&row.bar, "max", 1.0);
         set(&row.bar, "value", bar.unwrap_or(0.0));
         for (action, b) in &row.buttons {
-            set(&get(b, "style"), "display", if buttons.contains(action) { "" } else { "none" });
+            call!(b, toggle, buttons.contains(action));
         }
     };
     if node("fs").is_none() {

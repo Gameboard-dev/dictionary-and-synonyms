@@ -1,0 +1,23 @@
+# cargo-about's settings for the third-party licence file of Dictionary and Synonyms
+# (https://embarkstudios.github.io/cargo-about/). generate.py in this folder runs it.
+
+# Only these licences are accepted. A crate under any other licence makes the generation fail. All of them allow
+# distribution in a program released under the MIT licence, Dictionary and Synonyms'.
+accepted = [
+    "MIT",
+    "Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "Zlib",
+    "Unlicense",
+    "Unicode-3.0",
+    "CC0-1.0",
+    "BSL-1.0",
+]
+
+ignore-build-dependencies = true
+ignore-dev-dependencies = true
+# The workspace's own crates (publish = false: the plugin and obsidian-kit) are not third-party: they are under the MIT
+# licence in LICENSE.
+private = { ignore = true }
