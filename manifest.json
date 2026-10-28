@@ -5,6 +5,6 @@
   "minAppVersion": "1.5.0",
   "description": "Select a word to see its synonyms and click one to replace it, or select it with Ctrl or Cmd held to see its definitions, from Datamuse, Wiktionary and Wikipedia. Each word is looked up once and kept as a note.",
   "author": "Gameboard-dev",
-  "isDesktopOnly": false,
+  "isDesktopOnly": true,
   "authorUrl": "https://github.com/Gameboard-dev"
 }
