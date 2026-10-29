@@ -1,7 +1,7 @@
 {
   "id": "dictionary-and-synonyms",
   "name": "Dictionary and Synonyms",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "minAppVersion": "1.5.0",
   "description": "Select a word to see its synonyms and click one to replace it, or select it with Ctrl or Cmd held to see its definitions, from Datamuse, Wiktionary and Wikipedia. Each word is looked up once and kept as a note.",
   "author": "Gameboard-dev",

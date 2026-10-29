@@ -64,6 +64,8 @@ cargo run -p pack --release -- dictionary-and-synonyms --deploy <vault>/.obsidia
 cargo test --release -p dictionary-and-synonyms-core
 ```
 
+Since 0.1.4 a release is built by GitHub Actions (`.github/workflows/release.yml`) when its tag (`x.y.z`, the manifest's version) is pushed: from the tagged source, in obsidian-cargo-lib at the commit pinned in the workflow, with the tests run first; the three files carry an artifact attestation of their build provenance. Check a downloaded file with `gh attestation verify main.js --repo Gameboard-dev/dictionary-and-synonyms`.
+
 Dependencies: wasm-bindgen, wasm-bindgen-futures, js-sys, serde, serde_json, serde-wasm-bindgen, backon (retries), quick-xml (WordNet's XML).
 
 ## Known limits
