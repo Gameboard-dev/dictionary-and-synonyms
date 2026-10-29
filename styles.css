@@ -33,7 +33,7 @@
 }
 
 /* The synonyms dropdown: one per row, used with the mouse (hover highlights, click chooses). */
-.dict-popover:has(.dict-menu) {
+.dict-popover.is-menu {
   padding: 4px;
   min-width: 160px;
 }

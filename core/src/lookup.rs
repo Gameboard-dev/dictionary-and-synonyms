@@ -487,6 +487,11 @@ fn show(coords: &JsValue, content: &JsValue) {
     let doc = get(&js::global(), "document");
     let pop = el("div", "dict-popover", "");
     add(&pop, content);
+    // the synonyms dropdown gets its own class, not `.dict-popover:has(.dict-menu)` (the community directory's CSS lint
+    // warns that :has makes the browser re-check selectors broadly)
+    if call!(get(content, "classList"), contains, "dict-menu") == JsValue::TRUE {
+        call!(get(&pop, "classList"), add, "is-menu");
+    }
     call!(pop, addEventListener, "mousedown", f1(|e| {
         call!(e, preventDefault);
         JsValue::UNDEFINED
