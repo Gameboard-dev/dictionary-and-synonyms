@@ -2,15 +2,15 @@
 
 An Obsidian plugin: select a word (or a phrase of up to four words) in the editor and its synonyms drop down beneath it; click one to put it in place of the selection, in the selection's case. Select it with Ctrl held (Cmd on macOS) to see its definitions instead: by part of speech, with Wiktionary's labels ("informal", "US"), and *Open note*. The list is used with the mouse (hover and click); any other click, key or scroll closes it. There is no pane.
 
-## Credit, and what differs from the plugin it replaces
+- **Synonyms on select**, as a vertical list under the word; a click puts the synonym in place in the word's case.
+- **Definitions on Ctrl+select** (Cmd+select on macOS), in a popover beside the word.
+- **Every lookup kept as a note** of properties, read before the network is asked again.
+- **Whole dictionaries for use offline**, downloaded only when you press Download, with the size shown first, a progress bar, Cancel and resume.
+- **Sources with stated licences**: Datamuse, Wiktionary, Wikipedia, Open English WordNet and kaikki.org, each named with its licence in every note.
 
-Dictionary and Synonyms was made to replace [Dictionary](https://github.com/phibr0/obsidian-dictionary) by phibr0 (plugin id `obsidian-dictionary-plugin`, licensed AGPL-3.0), whose ideas it follows: synonyms offered for a selected word, and looked-up words kept as notes. It is not a copy of that plugin's code. It is a new program, written in Rust, and contains none of Dictionary's code, text or styles, so it has its own licence (MIT). What it does differently, and why:
+## Disclosures (Obsidian's developer policies)
 
-- **Definitions that arrive.** Dictionary's English definitions come from the Free Dictionary API (`api.dictionaryapi.dev`). For the author of this plugin they failed with Dictionary's "Something went wrong.." message, and other users report the same failure ([issue #95](https://github.com/phibr0/obsidian-dictionary/issues/95): "request failed, status 404"). This plugin takes definitions from Wiktionary, then a Wikipedia summary for terms no dictionary has, with Datamuse's short definitions when Wikimedia is busy, or from a dictionary you have downloaded.
-- **No lookup pane.** Dictionary shows definitions in a side pane (its *Look up* menu item). Here, selecting a word with Ctrl or Cmd held shows its definitions in a popover beside it. Selecting a word without a modifier shows its synonyms, as in Dictionary, but as a vertical list under the word, used with the mouse; a click puts the synonym in place in the word's case.
-- **Every lookup kept as a note.** Each word looked up is saved as a note of properties, and the note is read before the network is asked again. Dictionary saves a note only when you ask it to.
-- **Offline dictionaries downloaded only on request.** Open English WordNet, or one language's entries from Wiktionary, downloaded when you press Download, with its size shown first, a progress bar, Cancel and resume. Dictionary downloads its offline dictionary at the first lookup that needs it.
-- **Sources with stated licences.** Datamuse, Wiktionary, Wikipedia, Open English WordNet and kaikki.org, each named with its licence in every note.
+Free, open source (MIT), no account, no ads and no telemetry. The plugin sends the word or phrase you select, and nothing else from your notes, to Datamuse, Wiktionary and Wikipedia, and only when that word has no note yet. It downloads a whole dictionary (from en-word.net or kaikki.org) only when you press Download, and keeps it in your computer's cache folder, outside the vault. It never downloads, installs or updates code. Desktop only, because the downloads use Node's modules. Each service, what it receives and why, its privacy policy, and how the plugin meets Obsidian's [Developer policies](https://docs.obsidian.md/community-directory/developer-policies): [Disclosures and compliance](docs/disclosures.md).
 
 ## Where the words come from
 
@@ -19,6 +19,9 @@ Dictionary and Synonyms was made to replace [Dictionary](https://github.com/phib
 | Synonyms | The Datamuse API (`/words?ml=…`, the entries tagged `syn`; <https://www.datamuse.com/api/>), free and without a key; English and Spanish | Datamuse's terms; its synonyms draw on WordNet 3.0 (Princeton's WordNet licence) |
 | Definitions | Wiktionary through the MediaWiki Action API (`api.php`, <https://www.mediawiki.org/wiki/API:Revisions>), the API every Wikimedia site runs on | CC BY-SA 4.0 |
 | Definitions Wiktionary lacks | Wikipedia's summary (TextExtracts): the exact title, else a search whose result must contain the selection's words; then Datamuse's definitions (`md=d`) | CC BY-SA 4.0 |
+| Offline (optional) | A dictionary you have downloaded: Open English WordNet, or one language's entries from Wiktionary (Downloads, below) | WordNet CC BY 4.0; Wiktionary CC BY-SA 4.0 |
+
+Definitions come from Wiktionary first, then from a Wikipedia summary for a term no dictionary has; when Wikimedia is busy, Datamuse's short definitions stand in. With a dictionary downloaded, a word's definitions are looked up there before the network.
 
 Wikimedia limits clients that do not identify themselves to about 10 requests a minute; every request therefore carries a User-Agent naming the plugin, its version and a contact (*Contact for Wikimedia* in the settings, by default this plugin's page), as Wikimedia's policy asks (<https://foundation.wikimedia.org/wiki/Policy:Wikimedia_Foundation_User-Agent_Policy>). A 429 is waited out by its Retry-After, and no other request is sent meanwhile. Measured (2026-10-24): 15 lookups in a row, all answered.
 
@@ -67,43 +70,11 @@ Dependencies: wasm-bindgen, wasm-bindgen-futures, js-sys, serde, serde_json, ser
 
 - Synonyms only for the languages Datamuse has (English, Spanish); other languages get definitions only.
 - Desktop only (`isDesktopOnly`), because the downloads use Node's modules. Where those modules are missing or are stand-ins (Obsidian run in a browser), nothing is downloaded and words are looked up over the network.
-- Datamuse says on its page (read 2026-10-28) that from early 2027 every request will need an API key. Until the plugin has a setting for one, synonyms for a word that has no note yet may stop arriving then; definitions do not depend on Datamuse.
+- Datamuse says on its page (read 2026-10-29) that from early 2027 every request will need an API key (the page gives both 1 January and 1 February 2027). Until the plugin has a setting for one, synonyms for a word that has no note yet may stop arriving then; definitions do not depend on Datamuse.
 
-## Disclosures and compliance
+## Acknowledgements
 
-Dictionary and Synonyms is written to meet Obsidian's [Developer policies](https://docs.obsidian.md/Community+directory/Developer+policies), the [Submission requirements for plugins](https://docs.obsidian.md/community-directory/submission-requirements-for-plugins) and the [Plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines). The disclosures the policies ask for, in their order:
-
-- **Payment:** none. The plugin and its sources are free.
-- **Account:** none. No sign-in and no API key.
-- **Network use:** the words come from online dictionaries, too large to ship with the plugin.
-  - *When you select a word* (and it has no note yet), the plugin sends that word or phrase, and nothing else from your notes, to:
-    - the Datamuse API (`api.datamuse.com`), for its synonyms (and short definitions when Wikimedia is busy);
-    - Wiktionary (`en.wiktionary.org`), for its definitions;
-    - Wikipedia (`<language>.wikipedia.org`), for an encyclopedia summary when no dictionary has the term.
-  - Wikimedia's requests carry a User-Agent with the plugin's name, version and the *Contact for Wikimedia* setting (by default this repository's address, not anything about you), as Wikimedia's policy asks.
-  - *When the settings tab is open*, a HEAD request to `en-word.net` and `kaikki.org` asks each download's size; no data is downloaded.
-  - *Only when you press Download* in the settings, the plugin downloads Open English WordNet from `en-word.net` (11 MB) or kaikki.org's Wiktionary extract from `kaikki.org` (3.1 GB). It never downloads, installs or updates code.
-  - Once a word has a note, or a whole dictionary is downloaded, that word needs no network.
-- **Files outside the vault:** a downloaded dictionary is kept in your computer's cache folder, because a dictionary of hundreds of megabytes does not belong in a vault that may be synced: Windows `%LOCALAPPDATA%\dictionary-and-synonyms`, macOS `~/Library/Caches/dictionary-and-synonyms`, Linux `$XDG_CACHE_HOME/dictionary-and-synonyms` (by default `~/.cache/dictionary-and-synonyms`). Delete removes it, or delete the folder yourself. Nothing else is read or written outside the vault.
-- **Files in the vault:** one note per word looked up, in the folder set in the settings (by default `Dictionary/<language>/`), and the plugin's settings (`data.json` in its plugin folder). At start, notes in that folder of the plugin's earlier format (a `dict-entry` property) are rewritten in the current one.
-- **Ads:** none.
-- **Telemetry:** none. Nothing about you or your use is collected or sent anywhere.
-- **Source code:** open source, under the MIT licence (`LICENSE`), built from the Rust source in this repository and the shared crate and build tool in [obsidian-cargo-lib](https://github.com/Gameboard-dev/obsidian-cargo-lib) (Layout and build, above).
-
-| Rule | How Dictionary and Synonyms meets it |
-|---|---|
-| No self-install or self-update | The plugin never installs or updates itself or any code. Dictionary data is downloaded only when you press Download, and is data, not code. |
-| No obfuscation | `main.js` is a short loader; the plugin's code is a WebAssembly module (inlined in `main.js` in a release) compiled from the Rust source here, with its JavaScript bindings generated by wasm-bindgen and kept readable. Build instructions are above. |
-| No client-side telemetry, no ads | None. |
-| Disclosures | Network use and files outside the vault, above. |
-| Licence and attribution | `LICENSE` (MIT). `THIRD-PARTY-LICENSES.txt`: the Rust crates compiled into the plugin, with their licences (generated by `licences/generate.py` with cargo-about), and the sources of the words with their licences and the attribution they ask for. No dictionary data is shipped. Each note's `sources` property names where its text came from and under which licence. |
-| Desktop only | `isDesktopOnly` is `true`: the downloads use Node's `https`, `zlib`, `fs`, `os` and `path`, which the submission requirements allow only with `isDesktopOnly`. The plugin checks for them before use. |
-| Commands and hotkeys | The plugin adds no commands and sets no hotkeys. |
-| Security | No `innerHTML`, `outerHTML` or `insertAdjacentHTML`; text is set with `textContent` and the DOM API. No `eval`: in a release the bindings are part of `main.js`. The Web Worker that sorts a download runs the same bundled bindings from a Blob URL, never code from elsewhere. |
-| Settings | One heading (`setHeading`) for the downloads section, in sentence case, without the word "settings". |
-| Vault | Notes are read and written with the Vault API (`cachedRead`, `process`, `create`, `createFolder`); the folder setting goes through `normalizePath`. |
-| Resources | Events are registered with `registerDomEvent`; on unload the plugin closes its popover and stops a running download and its worker. |
-| `this.app` | The plugin uses the plugin's own `app`, never the global one. |
+Inspired by [Dictionary](https://github.com/phibr0/obsidian-dictionary) by phibr0. Dictionary and Synonyms is a separate program, written from scratch in Rust, and shares no code with it.
 
 ## Licence
 
